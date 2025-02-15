@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DENMIN'S SHOPPING CART</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-size: cover;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgb(56, 68, 41);
+            color: white;
+            padding: 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 0px;
+            padding: 0 20px;
+        }
+        .cart-icon {
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .section_products{
+            margin-top: 100px;
+            background: url('https://wallpapers.com/images/featured/clothes-background-ot7pkynbf8g28jsr.jpg')no-repeat center center/cover;
+            height: 700px;
+            width: 100%;
+        }
+        #products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 10px;
+            justify-content: center;
+        }
+        .product {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 25px;
+            text-align: center;
+            width: 300px;
+            height: 450px;
+            background: #fff;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .product:hover {
+            transform: scale(1.05);
+        }
+        .product img {
+            width: 290px;
+            height: 290px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .product button {
+            background: rgb(44, 195, 54);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .cart-panel {
+            position: fixed;
+            top: 0;
+            right: -380px;
+            z-index: 1000;
+            width: 300px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+            transition: right 0.3s ease-in-out;
+            padding: 20px;
+        }
+        .cart-panel.open {
+            right: 0;
+        }
+
+        h1{
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .cart-panel.open li{
+            display: flex;
+            justify-content: space-between;
+            list-style: none;
+            gap: 30px;
+        }
+        .cart-panel.open li img{
+            height: 80px;
+            width: 80px;
+        }
+        .cart-panel.open li button{
+            width: 80px;
+            color: white;
+            background-color: rgb(31, 180, 83);
+            border: none;
+            height: 30px;
+            border-radius: 50px;
+        }
+        .cart-panel.open li {
+            font-size: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .footer{
+            padding-top: 10px;
+            width: 100%;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            font-family:"Open-sans" ,Arial, Helvetica, sans-serif;
+        }
+        .cart-panel p{
+          font-size: 20px;
+          font-weight: 600;
+        }
+        .cart-panel button{
+            width: 100px;
+            height: 30px;
+            padding: 10px;
+            text-align: center;
+            background-color: rgb(56, 56, 217);
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>DENMIN SHOPPING CART</h1>
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 <span id="cart-count">0</span>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="section_products"></div>
+        <h1>Latest Trends</h1>
+        <section id="products"></section>
+    </main>
+    <div id="cart" class="cart-panel">
+        <h2>Shopping Cart</h2>
+        <ul id="cart-items"></ul>
+        <p>Total: $<span id="total-price">0.00</span></p>
+        <button onclick="clearCart()">Empty Cart</button>
+    </div>
+    <hr>
+    <footer class="footer">&copy;2025 Denmin Shopping Cart</footer>
+    <script>
+        let products = [
+            { name: "Jeans", price: 500.00, image: "https://i.pinimg.com/736x/dd/7a/98/dd7a98377bf58297ad78d2b79f50dacc.jpg" },
+            { name: "Hoodie", price: 999.99, image: "https://i.pinimg.com/736x/74/83/cb/7483cb3e9c494f6a6ca050faccb54c5b.jpg" },
+            { name: "Work wear", price: 4990.99, image: "https://i.pinimg.com/736x/35/f9/39/35f9397367d9a8f86a2f0eb4d9b9ecd8.jpg" },
+            { name: "Skirt Jeans", price: 499.99, image: "https://i.pinimg.com/736x/3b/34/97/3b3497a4e89d453ec70323426f250d8a.jpg" },
+            { name: "Denmin Skirt", price: 799.99, image: "https://i.pinimg.com/736x/18/90/17/18901783857a818d3aad03e6e3035bc6.jpg" },
+            { name: "Short Kurthi & Jeans", price: 299.99, image: "https://i.pinimg.com/736x/ab/fd/b6/abfdb61569e67aef6adf7c3c1fb0efc6.jpg" },
+            { name: "Indian Kurthi", price: 999.99, image: "https://i.pinimg.com/736x/16/2b/c6/162bc60c7c3e5fd735bee3082bb02394.jpg" },
+            { name: " Trendy Saree", price: 299.99, image: "https://i.pinimg.com/736x/07/f0/22/07f022c0e69828c7f51431ce0d678544.jpg" },
+
+            { name: "Denmin Skirt", price: 799.99, image: "https://i.pinimg.com/736x/78/62/17/7862175004b4d24f0059d829b8d0fceb.jpg" },
+            { name: "Short Kurthi & Jeans", price: 299.99, image: "https://i.pinimg.com/736x/92/d3/0f/92d30f206fc03e289645771e96c6ee76.jpg" },
+            { name: "Indian Kurthi", price: 999.99, image: "https://i.pinimg.com/736x/9b/a8/64/9ba8649e5fabfd14dce49d327fc60f3a.jpg" },
+            { name: " Trendy Saree", price: 299.99, image: "https://i.pinimg.com/736x/b8/7c/95/b87c95fb3b2a1259d50fd27a7301fb26.jpg" }
+        ];
+
+        function displayProducts() {
+            let productContainer = document.getElementById('products');
+            products.forEach(product => {
+                let productCart = document.createElement('div');
+                productCart.classList.add('product');
+                productCart.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>$${product.price.toFixed(2)}</p>
+                    <button onclick="addToCart('${product.image}','${product.name}', ${product.price})">Add to Cart</button>
+                `;
+                productContainer.appendChild(productCart);
+            });
+        }
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function toggleCart() {
+            document.getElementById('cart').classList.toggle('open');
+        }
+
+        function updateCart() {
+            let cartItems = document.getElementById('cart-items');
+            let totalPrice = document.getElementById('total-price');
+            let cartCount = document.getElementById('cart-count');
+
+            cartItems.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                let li = document.createElement('li');
+                li.innerHTML =` <img src="${item.image}" width="50"> ${item.name} - $${item.price} x ${item.quantity}`;
+
+                let removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.onclick = () => removeFromCart(index);
+                li.appendChild(removeBtn);
+                cartItems.appendChild(li);
+                total += item.price * item.quantity;
+                let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartCount.textContent = totalItems;
+            });
+
+            totalPrice.textContent = total.toFixed(2);
+            cartCount.textContent = cart.length;
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function addToCart(image,name, price) {
+            let existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({ image, name, price, quantity: 1 });
+            }
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCart();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayProducts();
+            updateCart();
+        });
+    </script>
+</body>
+</html>
